@@ -26,10 +26,24 @@ def main():
     rmse = mean_squared_error(y_test, predictions) ** 0.5
     r2 = r2_score(y_test, predictions)
 
-    print("Mean Absolute Error:", round(mae, 3))
-    print("Root Mean Squared Error:", round(rmse, 3))
+    # The dataset's target is expressed in units of $100,000.
+    print("Mean Absolute Error: $" + format(mae * 100000, ",.0f"))
+    print("Root Mean Squared Error: $" + format(rmse * 100000, ",.0f"))
     print("R2 score:", round(r2, 3))
-    print("Example predicted median house value:", round(model.predict([X_test[0]])[0], 3))
+
+    sample_prediction = model.predict([X_test[0]])[0]
+    print("Example predicted median house value: $" + format(sample_prediction * 100000, ",.0f"))
+
+    print("\nMost influential features in this fitted model:")
+    ranked_features = sorted(
+        zip(housing.feature_names, model.feature_importances_),
+        key=lambda item: item[1],
+        reverse=True,
+    )
+    for name, importance in ranked_features:
+        print(f"{name}: {importance:.3f}")
+
+    print("\nThese estimates use the California Housing dataset and are not current property valuations.")
 
 
 if __name__ == "__main__":
